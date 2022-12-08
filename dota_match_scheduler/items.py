@@ -12,4 +12,5 @@ class MatchItem(Item):
     team_right = Field()
     match_format = Field()
     start_time = Field()
+    epoch_time = Field()
     tournament = Field()
