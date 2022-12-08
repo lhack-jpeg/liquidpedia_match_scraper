@@ -32,6 +32,7 @@ class MatchSchedulerSpider(scrapy.Spider):
             match_item["team_left"] = team_info.xpath('.//td[@class="team-left"]/span/span/a/@title').get()
 
             match_item["start_time"] = int(game_time.xpath(".//td/span/span/@data-timestamp").get())
+            match_item["epoch_time"] = match_item["start_time"]
             match_item["tournament"] = game_time.xpath(".//td/div/div/a/@title").get()
             match_item["tournament"] = match_item["tournament"][:-2]
             # TODO: Need to add leagueid, possibly use SQLalchemy to search for it.
@@ -46,4 +47,5 @@ class MatchSchedulerSpider(scrapy.Spider):
                 match_item["team_left"] = match_item["team_left"][0].strip()
                 match_item["start_time"] = aus_tz.localize(datetime.datetime.fromtimestamp(match_item["start_time"]))
                 match_item["start_time"] = match_item["start_time"].strftime(time_format)
+
                 yield match_item
