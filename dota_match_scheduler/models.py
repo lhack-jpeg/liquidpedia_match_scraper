@@ -1,10 +1,26 @@
-from sqlalchemy import Column, Integer, String, DateTime, BigInteger, create_engine
+import enum
+from sqlalchemy import Column, Integer, String, DateTime, BigInteger, Enum, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from variables import DB
 
 
 Base = declarative_base()
+
+
+class MyEnum(enum.Enum):
+    one = 'Bo1'
+    two = 'Bo2'
+    three = 'Bo3'
+    four = 'Bo5'
+
+    def return_enum(self, value):
+        '''
+        Checks the value passed through matches 
+        '''
+        for k, v in vars(self):
+            if v == value:
+                return self[k]
 
 
 def db_connect():
@@ -17,9 +33,10 @@ def db_connect():
 class Match(Base):
     __tablename__ = "matches"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(String(256), primary_key=True)
     team_one = Column("team_one", String(128), nullable=False)
     team_two = Column("team_two", String(128), nullable=False)
+    match_format = Column('match_format', Enum(MyEnum))
     match_time = Column("match_time", DateTime, nullable=False)
     epoch_time = Column("epoch", BigInteger, nullable=False)
     team_one_id = relationship("Teams", backref="team_one_id")
