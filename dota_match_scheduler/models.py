@@ -25,3 +25,15 @@ class Match(Base):
     team_one_id = relationship("Teams", backref="team_one_id")
     team_two_id = relationship("Teams", backref="team_two_id")
     # ! Need to add league_id to link back leagues table
+
+
+class Team(Base):
+    """This constructor is for the team/organisation data."""
+
+    __tablename__ = "teams"
+
+    # id (BigInt): team id
+    # team_name(Var Char): Organisation/team name
+
+    id = Column(BigInteger, primary_key=True)
+    team_name = Column(String(255))
