@@ -1,5 +1,5 @@
 import enum
-from sqlalchemy import Column, Integer, String, DateTime, BigInteger, Enum, create_engine
+from sqlalchemy import Column, Integer, String, DateTime, BigInteger, Enum, create_engine, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from variables import DB
@@ -9,15 +9,15 @@ Base = declarative_base()
 
 
 class MyEnum(enum.Enum):
-    one = 'Bo1'
-    two = 'Bo2'
-    three = 'Bo3'
-    four = 'Bo5'
+    one = "Bo1"
+    two = "Bo2"
+    three = "Bo3"
+    four = "Bo5"
 
     def return_enum(self, value):
-        '''
-        Checks the value passed through matches 
-        '''
+        """
+        Checks the value passed through matches
+        """
         for k, v in vars(self):
             if v == value:
                 return self[k]
@@ -36,11 +36,11 @@ class Match(Base):
     id = Column(String(256), primary_key=True)
     team_one = Column("team_one", String(128), nullable=False)
     team_two = Column("team_two", String(128), nullable=False)
-    match_format = Column('match_format', Enum(MyEnum))
+    match_format = Column("match_format", Enum(MyEnum))
     match_time = Column("match_time", DateTime, nullable=False)
-    epoch_time = Column("epoch", BigInteger, nullable=False)
-    team_one_id = relationship("Teams", backref="team_one_id")
-    team_two_id = relationship("Teams", backref="team_two_id")
+    epoch_time = Column("epoch_time", BigInteger, nullable=False)
+    team_one_id = Column(BigInteger, ForeignKey("teams.id"), nullable=False)
+    team_two_id = Column(BigInteger, ForeignKey("teams.id"), nullable=False)
     # ! Need to add league_id to link back leagues table
 
 
