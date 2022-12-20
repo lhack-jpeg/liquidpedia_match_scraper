@@ -63,8 +63,8 @@ ROBOTSTXT_OBEY = False
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'dota_match_scheduler.pipelines.DuplicatesPipelines': 100,
-    'dota_match_scheduler.pipelines.SaveMatchesPipeline': 200,
+    "dota_match_scheduler.pipelines.DuplicatesPipelines": 100,
+    "dota_match_scheduler.pipelines.SaveMatchesPipeline": 400,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
