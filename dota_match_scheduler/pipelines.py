@@ -35,19 +35,25 @@ class SaveMatchesPipeline(object):
         team_1_id = session.query(Team.id).filter(Team.team_name == item["team_left"]).first()
         try:
             match.team_one_id = team_1_id[0]
+            print(f"team one_id {match.team_one_id}")
+            if match.team_one_id is None:
+                DropItem(f"Can not find team id {item['team_left']}")
         except TypeError:
             DropItem(f"Can not retrive team_one_id {item}")
         match.team_two = item["team_right"]
         team_2_id = session.query(Team.id).filter(Team.team_name == item["team_right"]).first()
         try:
             match.team_two_id = team_2_id[0]
+            print(f"team one_id {match.team_two_id}")
+            if match.team_two_id is None:
+                DropItem(f"Can not find team id {item['team_right']}")
         except TypeError:
             DropItem(f"Can not retrive team_two_id {item}")
         match.match_time = item["start_time"]
         match.epoch_time = item["epoch_time"]
         match.match_format = item["match_format"]
-        match_id = hash(str(item["team_left"]) + str(item["team_right"]) + str(item["epoch_time"]))
-        match.id = str(match_id)
+        match_id = f'{str(item["team_left"])}-{str(item["team_right"])}-{str(item["epoch_time"])}'
+        match.id = match_id
 
         # ! check the sqlalchemy for league and return the id
 
@@ -73,11 +79,8 @@ class DuplicatesPipelines(object):
 
     def process_item(self, item, spider):
         session = self.Session()
-        match_id = hash(str(item["team_left"]) + str(item["team_right"]) + str(item["epoch_time"]))
-        match_id = int(match_id)
+        match_id = f'{str(item["team_left"])}-{str(item["team_right"])}-{str(item["epoch_time"])}'
         match_exists = session.query(Match.id).filter(Match.id == match_id).one_or_none()
-        team_1_id = session.query(Team.id).filter(Team.team_name == item["team_left"]).first()
-        team_2_id = session.query(Team.id).filter(Team.team_name == item["team_right"]).first()
         session.close()
 
         if match_exists is not None:
