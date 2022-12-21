@@ -9,6 +9,7 @@ from itemadapter import ItemAdapter
 from dota_match_scheduler.models import db_connect, Match, Team, MyEnum
 from sqlalchemy.orm import sessionmaker
 from scrapy.exceptions import DropItem
+from hashlib import md5
 
 
 class DotaMatchSchedulerPipeline:
@@ -32,33 +33,29 @@ class SaveMatchesPipeline(object):
         match = Match()
 
         match.team_one = item["team_left"]
-        team_1_id = session.query(Team.id).filter(Team.team_name == item["team_left"]).first()
-        try:
-            match.team_one_id = team_1_id[0]
-            print(f"team one_id {match.team_one_id}")
-            if match.team_one_id is None:
-                DropItem(f"Can not find team id {item['team_left']}")
-        except TypeError:
-            DropItem(f"Can not retrive team_one_id {item}")
+        team_1_id = (
+            session.query(Team.id)
+            .filter(Team.team_name == item["team_left"])
+            .first()
+        )
+        match.team_one_id = team_1_id[0]
         match.team_two = item["team_right"]
-        team_2_id = session.query(Team.id).filter(Team.team_name == item["team_right"]).first()
-        try:
-            match.team_two_id = team_2_id[0]
-            print(f"team one_id {match.team_two_id}")
-            if match.team_two_id is None:
-                DropItem(f"Can not find team id {item['team_right']}")
-        except TypeError:
-            DropItem(f"Can not retrive team_two_id {item}")
+        team_2_id = (
+            session.query(Team.id)
+            .filter(Team.team_name == item["team_right"])
+            .first()
+        )
+        match.team_two_id = team_2_id[0]
         match.match_time = item["start_time"]
         match.epoch_time = item["epoch_time"]
         match.match_format = item["match_format"]
         match.tournament_name = item["tournament"]
-        match_id = f'{str(item["team_left"])}-{str(item["team_right"])}-{str(item["epoch_time"])}'
+        match_id = f'{str(item["team_left"])}{str(item["team_right"])}{str(item["epoch_time"])}'.encode()
+        match_id = md5(match_id)
+        match_id = str(match_id.hexdigest())
         match.id = match_id
 
         # ! check the sqlalchemy for league and return the id
-
-        # If doesn't exist can add to database.
 
         session.add(match)
         session.commit()
@@ -80,9 +77,34 @@ class DuplicatesPipelines(object):
 
     def process_item(self, item, spider):
         session = self.Session()
-        match_id = f'{str(item["team_left"])}-{str(item["team_right"])}-{str(item["epoch_time"])}'
-        match_exists = session.query(Match.id).filter(Match.id == match_id).one_or_none()
+        match_id = f'{str(item["team_left"])}{str(item["team_right"])}{str(item["epoch_time"])}'.encode()
+        match_id = md5(match_id)
+        match_id = str(match_id.hexdigest())
+        match_exists = (
+            session.query(Match.id).filter(Match.id == match_id).one_or_none()
+        )
+        team_2_id = (
+            session.query(Team.id)
+            .filter(Team.team_name == item["team_right"])
+            .first()
+        )
+        team_1_id = (
+            session.query(Team.id)
+            .filter(Team.team_name == item["team_left"])
+            .first()
+        )
         session.close()
+
+        # If team name doesn't return an ID, item wil,be dropped.
+        try:
+            team_id = team_2_id[0]
+        except TypeError:
+            raise DropItem(f"Can not access id")
+
+        try:
+            team_id = team_1_id[0]
+        except TypeError:
+            raise DropItem(f"Can not access id")
 
         if match_exists is not None:
             raise DropItem(f"Duplicate match exists {match_id}")
