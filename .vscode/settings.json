@@ -1,0 +1,10 @@
+{
+  "python.formatting.blackArgs": ["--line-length", "80"],
+  "python.linting.enabled": true,
+  "[python]": {
+    "gitlens.codeLens.symbolScopes": ["!Module"],
+    "editor.wordBasedSuggestions": false,
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+  "editor.formatOnSave": true
+}
