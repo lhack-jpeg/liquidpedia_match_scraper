@@ -41,7 +41,9 @@ class Match(Base):
     epoch_time = Column("epoch_time", BigInteger, nullable=False)
     team_one_id = Column(BigInteger, ForeignKey("teams.id"), nullable=False)
     team_two_id = Column(BigInteger, ForeignKey("teams.id"), nullable=False)
+    tournament_name = Column(String(128))
     # ! Need to add league_id to link back leagues table
+    # ! Need to add tournament name as well.
 
 
 class Team(Base):
