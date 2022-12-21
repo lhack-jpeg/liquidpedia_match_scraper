@@ -52,6 +52,7 @@ class SaveMatchesPipeline(object):
         match.match_time = item["start_time"]
         match.epoch_time = item["epoch_time"]
         match.match_format = item["match_format"]
+        match.tournament_name = item["tournament"]
         match_id = f'{str(item["team_left"])}-{str(item["team_right"])}-{str(item["epoch_time"])}'
         match.id = match_id
 
