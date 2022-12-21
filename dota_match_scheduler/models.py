@@ -1,5 +1,14 @@
 import enum
-from sqlalchemy import Column, Integer, String, DateTime, BigInteger, Enum, create_engine, ForeignKey
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    DateTime,
+    BigInteger,
+    Enum,
+    create_engine,
+    ForeignKey,
+)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from variables import DB
@@ -27,7 +36,10 @@ def db_connect():
     """
     Returns a connection instance.
     """
-    return create_engine(f'mysql+mysqldb://{DB["USER"]}:{DB["PWORD"]}@localhost/{DB["DB"]}', pool_pre_ping=True)
+    return create_engine(
+        f'mysql+mysqldb://{DB["USER"]}:{DB["PWORD"]}@localhost/{DB["DB"]}',
+        pool_pre_ping=True,
+    )
 
 
 class Match(Base):
