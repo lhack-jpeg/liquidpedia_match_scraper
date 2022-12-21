@@ -10,7 +10,8 @@ class MatchSchedulerSpider(scrapy.Spider):
     name = "match_scheduler"
     allowed_domains = ["liquipedia.net"]
     start_urls = [
-        "https://liquipedia.net/dota2/Liquipedia:Upcoming_and_ongoing_matches"]
+        "https://liquipedia.net/dota2/Liquipedia:Upcoming_and_ongoing_matches"
+    ]
 
     def parse(self, response):
         aus_tz = pytz.timezone("Australia/Sydney")
@@ -29,17 +30,22 @@ class MatchSchedulerSpider(scrapy.Spider):
             game_time = match.xpath(".//tr[2]")
 
             match_item["match_format"] = team_info.xpath(
-                ".//td[@class='versus']/div/abbr/text()").get()
+                ".//td[@class='versus']/div/abbr/text()"
+            ).get()
             match_item["team_right"] = team_info.xpath(
-                './/td[@class="team-right"]/span/span/a/@title').get()
+                './/td[@class="team-right"]/span/span/a/@title'
+            ).get()
             match_item["team_left"] = team_info.xpath(
-                './/td[@class="team-left"]/span/span/a/@title').get()
+                './/td[@class="team-left"]/span/span/a/@title'
+            ).get()
 
-            match_item["start_time"] = int(game_time.xpath(
-                ".//td/span/span/@data-timestamp").get())
+            match_item["start_time"] = int(
+                game_time.xpath(".//td/span/span/@data-timestamp").get()
+            )
             match_item["epoch_time"] = match_item["start_time"]
             match_item["tournament"] = game_time.xpath(
-                ".//td/div/div/a/@title").get()
+                ".//td/div/div/a/@title"
+            ).get()
             match_item["tournament"] = match_item["tournament"][:-2]
 
             if match_item["match_format"] is None:
@@ -52,8 +58,10 @@ class MatchSchedulerSpider(scrapy.Spider):
                 match_item["team_left"] = match_item["team_left"].split("(")
                 match_item["team_left"] = match_item["team_left"][0].strip()
                 match_item["start_time"] = aus_tz.localize(
-                    datetime.datetime.fromtimestamp(match_item["start_time"]))
+                    datetime.datetime.fromtimestamp(match_item["start_time"])
+                )
                 match_item["start_time"] = match_item["start_time"].strftime(
-                    time_format)
+                    time_format
+                )
 
                 yield match_item
