@@ -27,3 +27,8 @@ If the either of the above conditions are met they are ignore from the next pipe
 
 The pipeline runs after the first one to save the remaining items to the matches database.
 The teams model instance is created and save for each item in the database and commited and save in the database.
+
+### To run the spider:
+
+1. Navigate to the root of the project in the terminal
+2. Run `scrapy crawl match_scheduler`
