@@ -8,6 +8,7 @@ from sqlalchemy import (
     Enum,
     create_engine,
     ForeignKey,
+    Text,
 )
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
@@ -67,4 +68,6 @@ class Team(Base):
     # team_name(Var Char): Organisation/team name
 
     id = Column(BigInteger, primary_key=True)
-    team_name = Column(String(255))
+    name = Column(String(255))
+    tag = Column(String(255))
+    logo_url = Column(Text)

@@ -35,14 +35,14 @@ class SaveMatchesPipeline(object):
         match.team_one = item["team_left"]
         team_1_id = (
             session.query(Team.id)
-            .filter(Team.team_name == item["team_left"])
+            .filter(Team.name == item["team_left"])
             .first()
         )
         match.team_one_id = team_1_id[0]
         match.team_two = item["team_right"]
         team_2_id = (
             session.query(Team.id)
-            .filter(Team.team_name == item["team_right"])
+            .filter(Team.name == item["team_right"])
             .first()
         )
         match.team_two_id = team_2_id[0]
@@ -85,12 +85,12 @@ class DuplicatesPipelines(object):
         )
         team_2_id = (
             session.query(Team.id)
-            .filter(Team.team_name == item["team_right"])
+            .filter(Team.name == item["team_right"])
             .first()
         )
         team_1_id = (
             session.query(Team.id)
-            .filter(Team.team_name == item["team_left"])
+            .filter(Team.name == item["team_left"])
             .first()
         )
         session.close()
