@@ -2,8 +2,12 @@ import scrapy
 import datetime
 import pytz
 from dota_match_scheduler.items import MatchItem
-
-from scrapy.utils.response import open_in_browser
+from scrapy.contracts import ContractsManager
+from scrapy.contracts.default import (
+    UrlContract,
+    ReturnsContract,
+    ScrapesContract,
+)
 
 
 class MatchSchedulerSpider(scrapy.Spider):
@@ -14,6 +18,12 @@ class MatchSchedulerSpider(scrapy.Spider):
     ]
 
     def parse(self, response):
+        """
+        This method gets the match_format, both teams, start time
+        @url https://liquipedia.net/dota2/Liquipedia:Upcoming_and_ongoing_matches
+        @scrapes match_format team_right team_left start_time epoch_time tournament
+        @returns items
+        """
         aus_tz = pytz.timezone("Australia/Sydney")
         time_format = "%Y-%m-%d %H:%M:%S"
         match_item = MatchItem()
